@@ -2,7 +2,7 @@ import type { MauticSubmitButtonProps } from "../types";
 
 export const MauticSubmitButton = ({
   className = "",
-  children = "Invia",
+  children = "Submit",
   formName,
 }: MauticSubmitButtonProps) => (
   <button

@@ -30,7 +30,7 @@ export const MauticFormScript = ({
     if (typeof window !== "undefined") {
       window.MauticSDKLoaded = false;
       window.MauticLang = {
-        submittingMessage: "Si prega di attendere...",
+        submittingMessage: "Loading...",
       };
     }
 

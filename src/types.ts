@@ -18,6 +18,7 @@ export interface MauticFormProps {
   action?: string;
   children: React.ReactNode;
   successCallback?: (formData: any) => void;
+  translations?: MauticFormTranslations;
 }
 
 export interface MauticInputProps {
@@ -108,4 +109,9 @@ declare global {
     MauticDomain?: string;
     mt?: (action: string, eventName: string, config?: any) => void;
   }
+}
+
+export interface MauticFormTranslations {
+  submitSuccess?: string;
+  submitError?: string;
 }

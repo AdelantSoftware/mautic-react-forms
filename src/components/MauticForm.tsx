@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import type { MauticFormProps, ToastState } from "../types";
+import type {
+  MauticFormProps,
+  MauticFormTranslations,
+  ToastState,
+} from "../types";
 import { Toast } from "./Toast";
 
 export const MauticForm = ({
@@ -8,6 +12,7 @@ export const MauticForm = ({
   action,
   children,
   successCallback,
+  translations = {},
 }: MauticFormProps) => {
   const [toast, setToast] = useState<ToastState>({
     show: false,
@@ -20,6 +25,18 @@ export const MauticForm = ({
     setTimeout(() => {
       setToast({ show: false, message: "", type: "success" });
     }, 5000);
+  };
+
+  // Default translations
+  const defaultTranslations: MauticFormTranslations = {
+    submitSuccess: "Form submitted successfully!",
+    submitError: "Error submitting form. Please try again.",
+  };
+
+  // Merge default translations with provided translations
+  const t = {
+    ...defaultTranslations,
+    ...translations,
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,13 +57,13 @@ export const MauticForm = ({
 
       if (response.ok) {
         successCallback?.(formData);
-        showToast("Form submitted successfully!", "success");
+        showToast(t.submitSuccess!, "success");
         form.reset();
       } else {
         throw new Error("Form submission failed");
       }
     } catch (error) {
-      showToast("Error submitting form. Please try again.", "error");
+      showToast(t.submitError!, "error");
     }
   };
 
