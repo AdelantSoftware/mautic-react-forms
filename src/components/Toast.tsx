@@ -1,3 +1,5 @@
+"use client";
+
 import type { ToastProps } from "../types";
 
 export const Toast = ({ message, type, onClose }: ToastProps) => (

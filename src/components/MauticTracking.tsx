@@ -1,3 +1,5 @@
+"use client";
+
 let NextScript: any;
 try {
   // Dynamically try to import Next.js Script component
