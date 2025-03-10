@@ -65,5 +65,20 @@ export const MauticFormScript = ({
       />
     );
   }
-  return <script id="mautic-tracking" src={fullMauticFormURL} async={true} />;
+  return (
+    <script
+      id="mautic-tracking"
+      src={fullMauticFormURL}
+      async={true}
+      onLoad={() => {
+        if (typeof window !== "undefined" && !window.MauticSDKLoaded) {
+          window.MauticSDKLoaded = true;
+          window.MauticDomain = `${mauticDomain}`;
+          if (typeof window.MauticSDK !== "undefined") {
+            window.MauticSDK.onLoad();
+          }
+        }
+      }}
+    />
+  );
 };
