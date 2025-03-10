@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect } from "react";
 
 let NextScript;
@@ -53,7 +51,7 @@ export const MauticFormScript = ({
     return (
       <NextScript
         src={fullMauticFormURL}
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         onLoad={() => {
           if (typeof window !== "undefined" && !window.MauticSDKLoaded) {
             window.MauticSDKLoaded = true;
@@ -63,8 +61,9 @@ export const MauticFormScript = ({
             }
           }
         }}
+        async={true}
       />
     );
   }
-  return <script id="mautic-tracking" src={fullMauticFormURL} />;
+  return <script id="mautic-tracking" src={fullMauticFormURL} async={true} />;
 };

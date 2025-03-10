@@ -1,5 +1,3 @@
-"use client";
-
 import type { MauticInputProps } from "../types";
 
 export const MauticInput = ({

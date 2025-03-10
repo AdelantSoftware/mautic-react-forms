@@ -1,5 +1,3 @@
-"use client";
-
 import type { MauticSubmitButtonProps } from "../types";
 
 export const MauticSubmitButton = ({

@@ -1,5 +1,3 @@
-"use client";
-
 let NextScript: any;
 try {
   // Dynamically try to import Next.js Script component
@@ -35,6 +33,7 @@ export const MauticTracking = ({
         id="mautic-tracking"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: scriptContent }}
+        async={true}
       />
     );
   }
@@ -44,6 +43,7 @@ export const MauticTracking = ({
     <script
       id="mautic-tracking"
       dangerouslySetInnerHTML={{ __html: scriptContent }}
+      async={true}
     />
   );
 };

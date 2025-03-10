@@ -41,7 +41,7 @@
     "@types/react-dom": "^19.0.0"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir dist && tsc --emitDeclarationOnly",
+    "build": "bun build ./src/index.ts --outdir dist --format esm --external react-dom --external react --external next --external typescript --banner '\"use client\"' && bun build --outfile=./dist/index.cjs ./src/index.ts --format cjs --external react-dom --external react --external next --external typescript --banner '\"use client\"' && tsc --emitDeclarationOnly",
     "dev": "bun build --watch",
     "test": "bun test"
   }
