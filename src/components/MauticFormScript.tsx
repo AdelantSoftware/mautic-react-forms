@@ -1,13 +1,4 @@
-import React, { useEffect } from "react";
-
-let NextScript;
-try {
-  // Dynamically try to import Next.js Script component
-  NextScript = require("next/script").default;
-} catch (e) {
-  // Next.js is not available, will use regular script tag
-  NextScript = null;
-}
+import React, { useEffect, useState } from "react";
 
 export const MauticFormScript = ({
   mauticDomain,
@@ -16,26 +7,36 @@ export const MauticFormScript = ({
   mauticDomain: string;
   mauticFormURL: string;
 }) => {
+  const [NextScript, setNextScript] = useState<React.ComponentType<any> | null>(
+    null
+  );
+
   useEffect(() => {
-    // Function to initialize Mautic SDK after script loads
-    const initMautic = () => {
-      if (typeof window.MauticSDK !== "undefined") {
-        window.MauticSDK.onLoad();
-      }
-    };
+    // Try to load Next.js Script component dynamically
+    import("next/script")
+      .then((mod) => {
+        setNextScript(() => mod.default || mod);
+      })
+      .catch(() => {
+        setNextScript(null);
+      });
 
-    initMautic();
-
-    // Add event listener for script load
     if (typeof window !== "undefined") {
       window.MauticSDKLoaded = false;
       window.MauticLang = {
         submittingMessage: "Loading...",
       };
+
+      const initMautic = () => {
+        if (window.MauticSDK !== undefined) {
+          window.MauticSDK.onLoad();
+        }
+      };
+
+      initMautic();
     }
 
     return () => {
-      // Cleanup if needed
       if (typeof window !== "undefined") {
         delete window.MauticSDKLoaded;
         delete window.MauticLang;
@@ -43,42 +44,37 @@ export const MauticFormScript = ({
     };
   }, []);
 
-  const fullMauticFormURL = mauticFormURL
-    ? mauticFormURL
-    : `${mauticDomain}/media/js/mautic-form.js`;
+  const fullMauticFormURL =
+    mauticFormURL || `${mauticDomain}/media/js/mautic-form.js`;
+
+  const handleScriptLoad = () => {
+    if (typeof window !== "undefined" && !window.MauticSDKLoaded) {
+      window.MauticSDKLoaded = true;
+      window.MauticDomain = mauticDomain;
+      if (window.MauticSDK !== undefined) {
+        window.MauticSDK.onLoad();
+      }
+    }
+  };
 
   if (NextScript) {
     return (
       <NextScript
+        id="mautic-form-script"
         src={fullMauticFormURL}
         strategy="afterInteractive"
-        onLoad={() => {
-          if (typeof window !== "undefined" && !window.MauticSDKLoaded) {
-            window.MauticSDKLoaded = true;
-            window.MauticDomain = `${mauticDomain}`;
-            if (typeof window.MauticSDK !== "undefined") {
-              window.MauticSDK.onLoad();
-            }
-          }
-        }}
-        async={true}
+        onLoad={handleScriptLoad}
+        async
       />
     );
   }
+
   return (
     <script
-      id="mautic-tracking"
+      id="mautic-form-script"
       src={fullMauticFormURL}
-      async={true}
-      onLoad={() => {
-        if (typeof window !== "undefined" && !window.MauticSDKLoaded) {
-          window.MauticSDKLoaded = true;
-          window.MauticDomain = `${mauticDomain}`;
-          if (typeof window.MauticSDK !== "undefined") {
-            window.MauticSDK.onLoad();
-          }
-        }
-      }}
+      async
+      onLoad={handleScriptLoad}
     />
   );
 };

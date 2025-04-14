@@ -1,11 +1,4 @@
-let NextScript: any;
-try {
-  // Dynamically try to import Next.js Script component
-  NextScript = require("next/script").default;
-} catch (e) {
-  // Next.js is not available, will use regular script tag
-  NextScript = null;
-}
+import React, { useEffect, useState } from "react";
 
 export const MauticTracking = ({
   mauticURL,
@@ -14,9 +7,17 @@ export const MauticTracking = ({
   mauticURL: string;
   tags: string;
 }) => {
-  // Check if we're in development
-  const isDev = process.env.NODE_ENV === "development";
-  if (isDev) return null;
+  const [NextScript, setNextScript] = useState<React.ComponentType<any> | null>(
+    null
+  );
+
+  useEffect(() => {
+    import("next/script")
+      .then((mod) => setNextScript(() => mod.default || mod))
+      .catch(() => setNextScript(null));
+  }, []);
+
+  if (process.env.NODE_ENV === "development") return null;
 
   const scriptContent = `
     (function(w,d,t,u,n,a,m){w['MauticTrackingObject']=n;
@@ -26,24 +27,22 @@ export const MauticTracking = ({
     mt('send', 'pageview', { "tags": "${tags}" });
   `;
 
-  // Use Next.js Script if available, otherwise use standard script
   if (NextScript) {
     return (
       <NextScript
         id="mautic-tracking"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: scriptContent }}
-        async={true}
+        async
       />
     );
   }
 
-  // Standard React approach
   return (
     <script
       id="mautic-tracking"
       dangerouslySetInnerHTML={{ __html: scriptContent }}
-      async={true}
+      async
     />
   );
 };
