@@ -1,6 +1,6 @@
 # @adelant/react-mautic-forms
 
-A lightweight, flexible React component library for integrating Mautic forms into any React-based project. This library provides easy-to-use components for creating, styling, and handling Mautic form submissions with built-in toast notifications.
+A lightweight, flexible React component library for integrating Mautic forms into any React-based project. This library provides easy-to-use components for creating, styling, and handling Mautic form submissions.
 
 [![npm version](https://img.shields.io/npm/v/@adelant/react-mautic-forms.svg)](https://www.npmjs.com/package/@adelant/react-mautic-forms)
 [![npm downloads](https://img.shields.io/npm/dm/@adelant/react-mautic-forms.svg)](https://www.npmjs.com/package/@adelant/react-mautic-forms)
@@ -11,7 +11,6 @@ A lightweight, flexible React component library for integrating Mautic forms int
 - 🚀 Framework agnostic - works with any React project
 - 🧩 Modular components for maximum flexibility
 - 📱 Responsive design with customizable styling
-- 🔔 Built-in toast notifications for form submission status
 - 🔄 Automatic form reset on successful submission
 - 📝 TypeScript support with comprehensive type definitions
 - ⚡ Optimized for Next.js but works with any React setup
