@@ -244,6 +244,8 @@ Main container for Mautic forms that handles form submission and notifications.
   formName="contact_form" // Required: Unique form name
   action="https://mautic.example.com/form/submit" // Optional: Custom submission URL
   successCallback={(formData) => {}} // Optional: Function called on successful submission
+  errorCallback={(error, formData) => {}} // Optional: Function called on error
+  className="my-form" // Optional: CSS class for the wrapper
 >
   {/* Form elements go here */}
 </MauticForm>
@@ -258,7 +260,8 @@ Component for creating various form input types.
   formName="contact_form" // Required: Must match parent MauticForm's formName
   name="email" // Required: Field name
   label="Email Address" // Optional: Input label
-  type="email" // Optional: Input type (default: "text")
+  type="email" // Optional: Input type (default: "text") or "textarea"
+  component="input" // Optional: "input" or "textarea". Defaults to inferring from type.
   required={true} // Optional: Mark field as required
   validate="email" // Optional: Validation type
   validationType="email" // Optional: Additional validation params
@@ -266,10 +269,11 @@ Component for creating various form input types.
   errorMessage="Valid email required" // Optional: Custom error message
   placeholder="Enter your email" // Optional: Placeholder text
   autocomplete="email" // Optional: Autocomplete attribute
+  // ...other standard input/textarea props (onChange, onBlur, etc.)
 />
 ```
 
-Supported input types: `text`, `email`, `tel`, `number`, `date`, `textarea`
+Supported input types: `text`, `email`, `tel`, `number`, `date`, `textarea`, and others supported by HTML input.
 
 ### MauticSubmitButton
 
@@ -279,6 +283,7 @@ Customizable submit button for the form.
 <MauticSubmitButton
   formName="contact_form" // Required: Must match parent MauticForm's formName
   className="submit-button" // Optional: CSS classes
+  // ...other standard button props (disabled, onClick, etc.)
 >
   Send Message // Button text/content
 </MauticSubmitButton>
@@ -292,7 +297,45 @@ Adds Mautic tracking to your application. Include this once, typically in your a
 <MauticTracking
   mauticURL="https://mautic.example.com/mtc.js"
   tags="example.com"
+  enabled={true} // Optional: Explicitly enable/disable tracking. Defaults to !dev
 />
+```
+
+## Custom Hooks (Headless Usage)
+
+### useMauticForm
+
+If you need complete control over the form rendering and logic, you can use the `useMauticForm` hook.
+
+```jsx
+import { useMauticForm } from "@adelant/react-mautic-forms";
+
+function MyCustomForm() {
+  const { handleSubmit, isSubmitting, error } = useMauticForm({
+    formId: "123",
+    formName: "contact_form",
+    action: "https://mautic.example.com/form/submit",
+    successCallback: (formData) => console.log("Success!", formData),
+    errorCallback: (err) => console.error("Error!", err),
+  });
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="mauticform[email]" type="email" required />
+      
+      {/* Required hidden fields for Mautic */}
+      <input type="hidden" name="mauticform[formId]" value="123" />
+      <input type="hidden" name="mauticform[return]" value="" />
+      <input type="hidden" name="mauticform[formName]" value="contact_form" />
+
+      <button disabled={isSubmitting}>
+        {isSubmitting ? "Sending..." : "Send"}
+      </button>
+
+      {error && <div className="error">{error.message}</div>}
+    </form>
+  );
+}
 ```
 
 ### MauticFormScript

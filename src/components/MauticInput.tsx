@@ -12,44 +12,51 @@ export const MauticInput = ({
   errorMessage = "Required",
   placeholder = "",
   autocomplete = "off",
+  component,
+  ...props
 }: MauticInputProps) => {
   const fieldId = `mauticform_${formName}_${name}`;
+  const inputId = `mauticform_input_${formName}_${name}`;
+  const shouldRenderTextarea = component === 'textarea' || type === 'textarea';
 
   return (
     <div
       id={fieldId}
-      className={`mauticform-row mauticform-${type} ${
-        required ? "mauticform-required" : ""
-      } ${className}`}
+      className={`mauticform-row mauticform-${type} ${required ? "mauticform-required" : ""
+        } ${className}`}
       data-validate={validate}
       data-validation-type={validationType}
     >
       {label && (
         <label
           id={`mauticform_label_${formName}_${name}`}
-          htmlFor={`mauticform_input_${formName}_${name}`}
+          htmlFor={inputId}
           className="mauticform-label mb-2 block text-sm font-medium"
         >
           {label}
         </label>
       )}
-      {type === "textarea" ? (
+      {shouldRenderTextarea ? (
         <textarea
-          id={`mauticform_input_${formName}_${name}`}
+          id={inputId}
           name={`mauticform[${name}]`}
           className={`mauticform-input w-full rounded-md border px-3 py-2 ${className}`}
           placeholder={placeholder}
-          rows={5}
-          cols={70}
+          required={required}
+          aria-required={required}
+          {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
         ></textarea>
       ) : (
         <input
-          id={`mauticform_input_${formName}_${name}`}
+          id={inputId}
           name={`mauticform[${name}]`}
           type={type}
           className={`mauticform-input w-full rounded-md border px-3 py-2 ${className}`}
           placeholder={placeholder}
           autoComplete={autocomplete}
+          required={required}
+          aria-required={required}
+          {...props}
         />
       )}
       <span

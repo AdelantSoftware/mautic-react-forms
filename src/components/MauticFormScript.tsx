@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 export const MauticFormScript = ({
   mauticDomain,
@@ -8,7 +9,7 @@ export const MauticFormScript = ({
   mauticFormURL: string;
 }) => {
   const [NextScript, setNextScript] = useState<React.ComponentType<any> | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export const MauticFormScript = ({
   if (NextScript) {
     return (
       <NextScript
-        id="mautic-form-script"
+        id={"mautic-form-script"}
         src={fullMauticFormURL}
         strategy="afterInteractive"
         onLoad={handleScriptLoad}
@@ -71,7 +72,7 @@ export const MauticFormScript = ({
 
   return (
     <script
-      id="mautic-form-script"
+      id={"mautic-form-script"}
       src={fullMauticFormURL}
       async
       onLoad={handleScriptLoad}

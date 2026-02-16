@@ -4,6 +4,7 @@ export const MauticSubmitButton = ({
   className = "",
   children = "Submit",
   formName,
+  ...props
 }: MauticSubmitButtonProps) => (
   <button
     id={`mauticform_${formName}_submit`}
@@ -11,6 +12,7 @@ export const MauticSubmitButton = ({
     name="mauticform[submit]"
     type="submit"
     value="1"
+    {...props}
   >
     {children}
   </button>

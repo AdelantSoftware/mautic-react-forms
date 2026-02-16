@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 export const MauticTracking = ({
   mauticURL,
   tags,
+  enabled,
 }: {
   mauticURL: string;
   tags: string;
+  enabled?: boolean;
 }) => {
   const [NextScript, setNextScript] = useState<React.ComponentType<any> | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -17,7 +20,9 @@ export const MauticTracking = ({
       .catch(() => setNextScript(null));
   }, []);
 
-  if (process.env.NODE_ENV === "development") return null;
+  const shouldTrack = enabled !== undefined ? enabled : process.env.NODE_ENV !== "development";
+
+  if (!shouldTrack) return null;
 
   const scriptContent = `
     (function(w,d,t,u,n,a,m){w['MauticTrackingObject']=n;
@@ -30,19 +35,19 @@ export const MauticTracking = ({
   if (NextScript) {
     return (
       <NextScript
-        id="mautic-tracking"
+        id={"mautic-tracking"}
         strategy="afterInteractive"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: This is necessary to inject the Mautic tracking script with dynamic content.
         dangerouslySetInnerHTML={{ __html: scriptContent }}
-        async
       />
     );
   }
 
   return (
     <script
-      id="mautic-tracking"
+      id={"mautic-tracking"}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: This is necessary to inject the Mautic tracking script with dynamic content.
       dangerouslySetInnerHTML={{ __html: scriptContent }}
-      async
     />
   );
 };
