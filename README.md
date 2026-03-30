@@ -232,6 +232,28 @@ export default function ContactPage() {
 }
 ```
 
+If you need to avoid SSR rendering for the form itself (for example during strict prerendering workflows), lazy-load the form components with SSR disabled:
+
+```jsx
+// app/contact/page.jsx
+'use client';
+
+import dynamic from 'next/dynamic';
+
+const MauticForm = dynamic(
+  () => import('@adelant/react-mautic-forms').then((m) => m.MauticForm),
+  { ssr: false }
+);
+const MauticInput = dynamic(
+  () => import('@adelant/react-mautic-forms').then((m) => m.MauticInput),
+  { ssr: false }
+);
+const MauticSubmitButton = dynamic(
+  () => import('@adelant/react-mautic-forms').then((m) => m.MauticSubmitButton),
+  { ssr: false }
+);
+```
+
 ## Component API
 
 ### MauticForm
