@@ -10,6 +10,7 @@ A lightweight, flexible React component library for integrating Mautic forms int
 
 - 🚀 Framework agnostic - works with any React project
 - 🧩 Modular components for maximum flexibility
+- 🤖 Auto-generate forms from Mautic form definitions (no manual field wiring)
 - 📱 Responsive design with customizable styling
 - 🔄 Automatic form reset on successful submission
 - 📝 TypeScript support with comprehensive type definitions
@@ -92,6 +93,59 @@ function ContactForm() {
     </>
   );
 }
+```
+
+## MauticAutoForm — Zero-effort dynamic forms
+
+Instead of manually wiring every field, `MauticAutoForm` reads the form structure from Mautic and renders everything automatically.
+
+**Two ways to use it:**
+
+### Mode 1: Zero setup (auto-fetch from public endpoint)
+
+No credentials. No backend. Just `formId` and `mauticBaseUrl` — the component fetches `GET /form/{formId}` directly and parses the HTML.
+
+```jsx
+import { MauticAutoForm } from "@adelant/react-mautic-forms";
+
+<MauticAutoForm
+  formId={7}
+  mauticBaseUrl="https://mautic.example.com"
+  successCallback={(formData) => console.log("ok")}
+/>
+```
+
+### Mode 2: Server-side fetch (auth-protected API)
+
+If your Mautic API requires authentication, fetch the definition server-side and pass it as the `definition` prop. No credentials leak to the browser.
+
+### Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `formId` | `number` | ✓ | Mautic form ID |
+| `mauticBaseUrl` | `string` | ✓ | Your Mautic instance base URL |
+| `definition` | `object` | — | Pre-fetched form definition (if omitted, auto-fetches from public `/form/{id}`) |
+| `renderField` | `(field, formName) => ReactNode` | — | Custom field renderer. Return null to use default. |
+| `onFormLoaded` | `(def) => void` | — | Called on mount with the definition |
+| `successCallback` | `(formData) => void` | — | Called on successful submit |
+| `errorCallback` | `(error, formData) => void` | — | Called on error |
+| `className` | `string` | — | Wrapper class |
+| `fieldClassName` | `string` | — | Default class for fields |
+| `submitClassName` | `string` | — | Class for submit button |
+| `submitLabel` | `string` | — | Submit button text (falls back to Mautic label → "Submit") |
+
+### Custom field rendering
+
+```jsx
+<MauticAutoForm
+  formId={7}
+  mauticBaseUrl="https://mautic.example.com"
+  renderField={(field, formName) => {
+    if (field.alias === "country") return <CountrySelect key={field.id} />;
+    return null; // null = use default renderer for this field
+  }}
+/>
 ```
 
 ## Usage with Different Frameworks
